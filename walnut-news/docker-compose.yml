@@ -1,0 +1,9 @@
+version: '3'
+services:
+  scraper:
+    build: .
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium 
