@@ -1,0 +1,944 @@
+# News Scraper Project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Overview
+
+
+
+
+
+
+
+This project is a web scraper that collects news article data from The Guardian website using Puppeteer. It runs every 5 minutes in a Docker container and sends the collected data to a Laravel API endpoint.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Features
+
+
+
+
+
+
+
+- Automated web scraping using Puppeteer
+
+
+
+
+
+
+
+- Docker containerization
+
+
+
+
+
+
+
+- Scheduled execution (every 5 minutes)
+
+
+
+
+
+
+
+- API integration
+
+
+
+
+
+
+
+- Error handling and logging
+
+
+
+
+
+
+
+- AWS EC2 deployment ready
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Prerequisites
+
+
+
+
+
+
+
+- Docker and Docker Compose
+
+
+
+
+
+
+
+- Node.js (for local development)
+
+
+
+
+
+
+
+- A Laravel backend with a `/callback` endpoint
+
+
+
+
+
+
+
+- Git (for version control)
+
+
+
+
+
+
+
+- Internet connection (for accessing The Guardian website)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## System Requirements
+
+
+
+
+
+
+
+- Memory: Minimum 2GB RAM recommended
+
+
+
+- Storage: At least 1GB free space
+
+
+
+- CPU: 1 core minimum, 2 cores recommended
+
+
+
+- Network: Stable internet connection
+
+
+
+
+
+
+
+## Configuration
+
+
+
+### Required Environment Variables
+
+
+
+Create a `.env` file in the root directory:
+
+
+
+```env
+
+
+
+LARAVEL_API_ENDPOINT=http://your-laravel-api/callback
+
+
+
+NODE_ENV=production
+
+
+
+```
+
+
+
+### Optional Environment Variables
+
+
+
+```env
+
+
+
+SCRAPE_INTERVAL=*/5 * * * *  # Cron expression for scheduling
+
+
+
+DEBUG=true                    # Enable detailed logging
+
+
+
+```
+
+
+
+
+
+
+
+## Project Structure
+
+
+
+
+
+
+
+```
+
+
+
+news-scraper/
+
+
+
+├── src/
+
+
+
+│   ├── index.js        # Entry point and scheduler
+
+
+
+│   └── scraper.js      # Main scraping logic
+
+
+
+├── Dockerfile          # Docker image configuration
+
+
+
+├── docker-compose.yml  # Docker Compose configuration
+
+
+
+├── package.json        # Project dependencies
+
+
+
+└── README.md          # Project documentation
+
+
+
+```
+
+
+
+
+
+
+
+## Installation & Setup
+
+
+
+
+
+
+
+### Local Development
+
+
+
+1. Clone the repository
+
+
+
+```bash
+
+
+
+git clone <repository-url>
+
+
+
+cd news-scraper
+
+
+
+```
+
+
+
+
+
+
+
+2. Install dependencies
+
+
+
+```bash
+
+
+
+npm install
+
+
+
+```
+
+
+
+
+
+
+
+3. Configure the Laravel API endpoint in `src/scraper.js`
+
+
+
+```javascript
+
+
+
+await axios.post('http://your-laravel-api/callback', data);
+
+
+
+```
+
+
+
+
+
+
+
+### Docker Deployment
+
+
+
+1. Build and run with Docker Compose
+
+
+
+```bash
+
+
+
+docker compose up --build
+
+
+
+```
+
+
+
+
+
+
+
+2. Run in detached mode
+
+
+
+```bash
+
+
+
+docker compose up --build -d
+
+
+
+```
+
+
+
+
+
+
+
+3. View logs
+
+
+
+```bash
+
+
+
+docker compose logs -f
+
+
+
+```
+
+
+
+
+
+
+
+## Technical Details
+
+
+
+
+
+
+
+### Scraping Process
+
+
+
+The scraper performs three distinct actions:
+
+
+
+1. Navigates to The Guardian website
+
+
+
+2. Clicks on the News section
+
+
+
+3. Selects and reads an article
+
+
+
+
+
+
+
+### Data Collection
+
+
+
+For each article, the scraper collects:
+
+
+
+- Title
+
+
+
+- Word count
+
+
+
+- Timestamp
+
+
+
+
+
+
+
+### Scheduling
+
+
+
+- Runs every 5 minutes using node-cron
+
+
+
+- Configurable through the cron expression in `index.js`
+
+
+
+
+
+
+
+## Error Handling
+
+
+
+The application includes comprehensive error handling for:
+
+
+
+- Browser launch failures
+
+
+
+- Navigation timeouts
+
+
+
+- Selector timeouts
+
+
+
+- API communication errors
+
+
+
+
+
+
+
+## Monitoring
+
+
+
+- Docker container logs provide detailed operation status
+
+
+
+- Each scraping step is logged for debugging
+
+
+
+- API communication status is tracked
+
+
+
+
+
+
+
+## AWS Deployment
+
+
+
+See `deployment-steps.md` for detailed AWS EC2 deployment instructions.
+
+
+
+
+
+
+
+## Troubleshooting
+
+
+
+
+
+
+
+### Common Issues
+
+
+
+1. Docker Container Won't Start
+
+
+
+```bash
+
+
+
+# Check Docker logs
+
+
+
+docker compose logs
+
+
+
+
+
+
+
+# Verify Docker service is running
+
+
+
+docker ps
+
+
+
+```
+
+
+
+
+
+
+
+2. Scraping Failures
+
+
+
+- Check if selectors have changed on the website
+
+
+
+- Verify internet connectivity
+
+
+
+- Check browser launch parameters
+
+
+
+
+
+
+
+3. API Communication Issues
+
+
+
+- Verify Laravel endpoint is accessible
+
+
+
+- Check network configuration
+
+
+
+- Verify API endpoint format
+
+
+
+
+
+
+
+## Maintenance
+
+
+
+- Regular monitoring of logs
+
+
+
+- Update selectors if website structure changes
+
+
+
+- Keep dependencies updated
+
+
+
+- Monitor system resources
+
+
+
+
+
+
+
+## Support
+
+
+
+For issues and feature requests, please create an issue in the repository.
+
+
+
+
+
+
+
+## License
+
+
+
+[Your chosen license]
+
+
+
+
+
+
+
+## Environment Variables
+
+
+
+The following environment variables can be configured in docker-compose.yml:
+
+
+
+- `NODE_ENV`: Set to 'production' for production environment
+
+
+
+- `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD`: Prevents downloading Chromium during npm install
+
+
+
+- `PUPPETEER_EXECUTABLE_PATH`: Path to Chromium executable in container
+
+
+
+
+
+
+
+## API Response Format
+
+
+
+The scraper sends data to the Laravel endpoint in the following format:
+
+
+
+```json
+
+
+
+{
+
+
+
+    "title": "Article Title",
+
+
+
+    "wordCount": 1234,
+
+
+
+    "timestamp": "2024-03-14T12:00:00Z"
+
+
+
+}
+
+
+
+```
+
+
+
+
+
+
+
+## Security Considerations
+
+
+
+- The Docker container runs with minimal permissions
+
+
+
+- Chromium runs in sandbox mode with security flags
+
+
+
+- API endpoints should be protected with proper authentication
+
+
+
+- AWS security groups should be properly configured
+
+
+
+
+
+
+
+## Development
+
+
+
+### Adding New Features
+
+
+
+1. Create a new branch
+
+
+
+2. Implement your changes
+
+
+
+3. Add appropriate error handling
+
+
+
+4. Update documentation
+
+
+
+5. Submit a pull request
+
+
+
+
+
+
+
+### Testing
+
+
+
+To test the scraper locally:
+
+
+
+```bash
+
+
+
+# Run once
+
+
+
+node src/index.js
+
+
+
+
+
+
+
+# Monitor logs
+
+
+
+docker compose logs -f scraper
+
+
+
+```
+
+
+
+
+
+
+
+## Version History
+
+
+
+- 1.0.0: Initial release
+
+
+
+- [Future versions...]
+
+
+
+
+
+
+
+## Backup and Recovery
+
+
+
+- Regular backups of collected data recommended
+
+
+
+- Store logs for at least 30 days
+
+
+
+- Document any selector changes from The Guardian website
+
+
+
+
+
+
+
+## Performance Optimization
+
+
+
+- Container memory limits configured in docker-compose.yml
+
+
+
+- Browser cache cleared regularly
+
+
+
+- Connection pooling for API requests
+
+
+
+
+
+
+
+## Contributing
+
+
+
+1. Fork the repository
+
+
+
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+
+
+
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+
+
+
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+
+
+
+5. Open a Pull Request
+
+
+
+
+
+
+
